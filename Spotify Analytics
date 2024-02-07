@@ -28,13 +28,13 @@ time_signature integer NOT NULL
 
 #Next, I explored the data using the following SQL. 
 
-#First, I determined the Top 10 artists are by popularity.
+#First, I determined the Top 10 artists by popularity.
 SELECT artist_name, popularity
 FROM BIT_DB.Spotifydata
 ORDER BY popularity DESC
 LIMIT 10
 
-#Then, I determined which artist released the longest song?
+#Then, I determined which artist released the longest song.
 SELECT artist_name, duration_ms,track_name
 FROM BIT_DB.Spotifydata
 GROUP BY artist_name
