@@ -73,3 +73,24 @@ JOIN spotifydata s ON p.artist_name = s.artist_name
 WHERE s.popularity > 70
 GROUP BY p.artist_name
 ORDER BY avg_danceability DESC, avg_energy DESC;
+
+#Write a SQL query to find the top 3 artists with the highest average popularity among their tracks. However, exclude artists who have 
+tracks with a duration greater than the overall average duration of all tracks in the table. Include the columns:
+artist_name and avg_popularity. Order the result by avg_popularity in descending order. 
+WITH AvgTrackDuration AS (
+SELECT AVG(duration_ms) AS avg_duration
+FROM spotifydata
+)
+
+SELECT artist_name,AVG(popularity) AS avg_popularity
+FROM spotifydata
+WHERE artist_name IN (
+SELECT artist_name
+FROM spotifydata        
+GROUP BY artist_name
+HAVING MAX(duration_ms) <= (SELECT avg_duration FROM AvgTrackDuration) 
+)
+GROUP BY artist_name
+ORDER BY avg_popularity DESC
+LIMIT 3;
+
