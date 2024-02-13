@@ -1,6 +1,5 @@
 # For this project, I downloaded Spotify data from Kaggle.
 # Then I created a table to insert Spotify data into.
-# Finally, I performed analytics on the data using SQL. 
 
 #Creating the table: 
 CREATE TABLE BIT_DB.Spotifydata (
@@ -28,15 +27,49 @@ time_signature integer NOT NULL
 
 #Next, I explored the data using the following SQL. 
 
-#First, I determined the Top 10 artists by popularity.
+#Determine the Top 10 artists by popularity.
 SELECT artist_name, popularity
 FROM BIT_DB.Spotifydata
 ORDER BY popularity DESC
 LIMIT 10
 
-#Then, I determined which artist released the longest song.
+#Determine which artist released the longest song.
 SELECT artist_name, duration_ms,track_name
 FROM BIT_DB.Spotifydata
 GROUP BY artist_name
 ORDER BY duration_ms DESC
 LIMIT 1;
+
+#Write a SQL query to find the average popularity of tracks for each artist. Display the result with columns: 
+artist_name and avg_popularity. Also, order the results by avg_popularity in descending order. Finally, limit the results to 15.
+SELECT artist_name,AVG(popularity) AS avg_popularity
+FROM spotifydata
+GROUP BY artist_name
+ORDER BY avg_popularity DESC 
+LIMIT 15;
+
+#Write a SQL query to find the top 5 tracks with the highest danceability and energy, along with their respective artist names.
+Include the columns: artist_name, track_name, danceability, and energy. Order the results by a combination of danceability and 
+energy in descending order.
+SELECT artist_name,track_name,danceability,energy
+FROM spotifydata
+ORDER BY danceability DESC, energy DESC
+LIMIT 5;
+
+#Write a SQL query to find the average danceability and energy for tracks released by artists who have at least two tracks with a popularity 
+score greater than 80. Exclude tracks with popularity scores less than or equal to 70. Include the columns: artist_name, avg_danceability,
+and avg_energy. Order the result by avg_danceability and avg_energy in descending order. 
+WITH PopularArtists AS (
+SELECT artist_name
+FROM spotifydata
+WHERE popularity > 80
+GROUP BY artist_name
+HAVING COUNT(*) >= 2
+)
+
+SELECT p.artist_name,AVG(s.danceability) AS avg_danceability,AVG(s.energy) AS avg_energy
+FROM PopularArtists p
+JOIN spotifydata s ON p.artist_name = s.artist_name
+WHERE s.popularity > 70
+GROUP BY p.artist_name
+ORDER BY avg_danceability DESC, avg_energy DESC;
